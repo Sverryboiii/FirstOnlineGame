@@ -1,0 +1,6 @@
+0: PING
+1: Register User
+2: Keys Held
+3: Request Draw Info
+4: End Session
+5: Log In
