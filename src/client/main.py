@@ -11,11 +11,12 @@ def init_player():
 
     error_message = ""
 
-    un_surf = events.LOGIN_FONT.render(username, True, config.text_color)
+    un_surf = events.LOGIN_FONT.render(f"Name: {username}", True, config.text_color)
+    pw_surf = events.LOGIN_FONT.render(f"Password: {password}", True, config.text_color)
     error_surf = events.LOGIN_FONT.render(error_message, True, config.error_text_color)
 
-    running = True
-    while running:
+    success = False
+    while not success:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -23,7 +24,7 @@ def init_player():
                 sys.exit()
 
             elif event.type == pygame.KEYDOWN:
-                if event.key in [pygame.K_UP, pygame.K_DOWN]:
+                if event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_TAB]:
                     selected = "UN" if selected == "PW" else "PW"
                 elif event.key == pygame.K_BACKSPACE:
                     if selected == "UN":
@@ -35,24 +36,34 @@ def init_player():
                         error_message = "Username must be at least 6 characters!"
                     elif len(password) < 8:
                         error_message = "Password must be at least 8 characters!"
+                    else:
+                        payload = network.send({"op": 1, "UN": username, "PW": password})
+                        if payload.get("STATUS") == 1:
+                            success = True
+                            events.UID = payload["UID"]
                 elif event.unicode.isprintable():
                     if selected == "UN":
                         username += event.unicode
                     elif selected == "PW":
                         password += event.unicode
 
+                error_surf = events.LOGIN_FONT.render(error_message, True, config.error_text_color)
+                un_surf = events.LOGIN_FONT.render(f"Name: {username}", True, config.text_color)
+                pw_surf = events.LOGIN_FONT.render(f"Password: {password}", True, config.text_color)
+
 
         # Draw
         events.window.blit(
-            error_message, (0, 200)
+            un_surf, (50, 50)
         )
-        events.window.blit()
+        events.window.blit(
+            pw_surf, (50, 125)
+        )
+        events.window.blit(
+            error_surf, (50, 200)
+        )
 
-    payload = {
-        "op": 1
-    }
-    payload = network.send(payload)
-    events.UID = payload["UID"]
+        pygame.display.flip()
 
 def main():
     network.try_connect()

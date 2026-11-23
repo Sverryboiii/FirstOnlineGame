@@ -31,7 +31,7 @@ def connect_user(name, password):
                     "STATUS": 1,
                     "UID": row[0],
                     "SESSION": data.SESSION_ID,
-                    "player": player.Player(50, 50)
+                    "player": player.Player(name, 50, 50)
                 }
         return {
             "STATUS": 0
@@ -43,6 +43,6 @@ def register_user(un, pw):
     create_user(data.UID, un, pw)
     return {
         "STATUS": 1,
-        "player": player.Player(50, 50),
+        "player": player.Player(un, 50, 50),
         "SESSION": data.SESSION_ID
     }

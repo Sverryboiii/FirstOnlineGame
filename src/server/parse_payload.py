@@ -8,13 +8,13 @@ def register_user(payload) -> bytes:
     user = file_manager.register_user(payload.get("UN", f"player{data.UID}"), payload.get("PW", None))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
-    return pickle.dumps({"UID": data.UID})
+    return pickle.dumps({"UID": data.SESSION_ID, "STATUS": 1}) if user["STATUS"] else pickle.dumps({"STATUS": 0})
 
 def connect_user(payload) -> bytes:
     user = file_manager.connect_user(payload.get("UN"), payload.get("PW"))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
-    return pickle.dumps({"UID": data.UID})
+    return pickle.dumps({"UID": data.SESSION_ID, "STATUS": 1}) if user["STATUS"] else pickle.dumps({"STATUS": 0})
 
 def key(payload) -> None:
     user = data.users[payload.get("UID", 0)]
