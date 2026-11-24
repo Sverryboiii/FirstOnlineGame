@@ -1,5 +1,6 @@
 
 FPS: int = 60
+PING_DELAY: int = 5 # Frames to wait before pinging at the first connect.
 
 # Colors
 BEIGE: tuple[int, int, int] = (220, 245, 245)

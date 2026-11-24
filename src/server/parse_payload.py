@@ -1,5 +1,4 @@
 from src.server import data, file_manager
-import pickle
 
 def parse_payload(payload: dict) -> bytes | None:
     return operations.get(payload.get("op", 0), operations[0])(payload)
@@ -8,13 +7,13 @@ def register_user(payload) -> bytes:
     user = file_manager.register_user(payload.get("UN", f"player{data.UID}"), payload.get("PW", None))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
-    return pickle.dumps({"UID": data.SESSION_ID, "STATUS": 1}) if user["STATUS"] else pickle.dumps({"STATUS": 0})
+    return {"UID": data.SESSION_ID, "STATUS": 1} if user["STATUS"] else {"STATUS": 0}
 
 def connect_user(payload) -> bytes:
     user = file_manager.connect_user(payload.get("UN"), payload.get("PW"))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
-    return pickle.dumps({"UID": data.SESSION_ID, "STATUS": 1}) if user["STATUS"] else pickle.dumps({"STATUS": 0})
+    return {"UID": data.SESSION_ID, "STATUS": 1} if user["STATUS"] else {"STATUS": 0}
 
 def key(payload) -> None:
     user = data.users[payload.get("UID", 0)]
@@ -39,7 +38,7 @@ def request_draw_info(_) -> bytes:
     for p in data.users.values():
         draw_info['players'].append((p.x, p.y))
 
-    return pickle.dumps(draw_info)
+    return draw_info
 
 def log_off(payload: dict) -> None:
 

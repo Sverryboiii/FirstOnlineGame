@@ -9,7 +9,7 @@ local_hosting = True
 IP = "127.0.0.1" if local_hosting else "192.168.122.255"
 PORT = 8080
 timeout_s = 10          # How long to wait for a response at the first connect.
-alive_timeout_s = 3     # Hoe long to wait for a response when playing
+alive_timeout_s = 3     # How long to wait for a response when playing
 
 context = ssl.create_default_context(cafile=file_manager.resource_path("keys/cert.pem"))
 
@@ -48,7 +48,7 @@ def send(payload: dict, ip=IP, port=PORT):
                         client.sendall(pickle.dumps(payload))
                         data = client.recv(1024)
             except OSError:
-                time.sleep(1/config.FPS)
+                time.sleep(config.PING_DELAY/config.FPS)
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         events.quit_game()
