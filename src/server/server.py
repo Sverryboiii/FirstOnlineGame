@@ -23,12 +23,13 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
 
         payload = json.loads(data.decode())
         payload["address"] = ":".join([address[0], str(address[1])])
-        response: bytes | None = json.dumps(parse_payload.parse_payload(payload)).encode()
+        response: bytes | None = json.dumps(await parse_payload.parse_payload(payload)).encode()
         if response:
             writer.write(response)
             await writer.drain()
 
 async def start_server():
+    file_manager.register_databases()
 
     server = await asyncio.start_server(handle_client, ip, port, ssl=context)
 

@@ -42,6 +42,7 @@ def init_player():
                         error_message = "Password must be at least 8 characters!"
                     else:
                         payload = network.send({"op": 1, "UN": username, "PW": password})
+                        print(payload)
                         if payload.get("STATUS") == 1:
                             success = True
                             events.UID = payload["UID"]
