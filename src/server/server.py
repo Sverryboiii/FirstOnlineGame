@@ -17,7 +17,7 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
 
     while True:
 
-        data = reader.read(1024)
+        data = await reader.read(1024)
         if not data:
             break
 
@@ -30,7 +30,9 @@ async def handle_client(reader: asyncio.StreamReader, writer: asyncio.StreamWrit
 
 async def start_server():
 
-    server = asyncio.start_server(handle_client, ip, port)
+    server = await asyncio.start_server(handle_client, ip, port, ssl=context)
+
+    print(f"Starting server: {ip}:{port}")
 
     async with server:
         await server.serve_forever()

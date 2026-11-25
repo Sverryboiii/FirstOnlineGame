@@ -1,15 +1,15 @@
 from src.server import data, file_manager
 
-def parse_payload(payload: dict) -> bytes | None:
+def parse_payload(payload: dict) -> dict | None:
     return operations.get(payload.get("op", 0), operations[0])(payload)
 
-def register_user(payload) -> bytes:
+def register_user(payload) -> dict:
     user = file_manager.register_user(payload.get("UN", f"player{data.UID}"), payload.get("PW", None))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
     return {"UID": data.SESSION_ID, "STATUS": 1} if user["STATUS"] else {"STATUS": 0}
 
-def connect_user(payload) -> bytes:
+def connect_user(payload) -> dict:
     user = file_manager.connect_user(payload.get("UN"), payload.get("PW"))
     data.users[data.UID] = user["player"]
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
@@ -29,7 +29,7 @@ def key(payload) -> None:
 
     return None
 
-def request_draw_info(_) -> bytes:
+def request_draw_info(_) -> dict:
 
     draw_info = {
         'players': []

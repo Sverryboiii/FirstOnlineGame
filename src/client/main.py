@@ -18,6 +18,8 @@ def init_player():
     success = False
     while not success:
 
+        events.window.fill(config.background_color)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -27,10 +29,12 @@ def init_player():
                 if event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_TAB]:
                     selected = "UN" if selected == "PW" else "PW"
                 elif event.key == pygame.K_BACKSPACE:
+                    print("Backspace pressed...")
                     if selected == "UN":
-                        username = username[:-1]
-                    elif selected == "PW":
-                        password = password[:-1]
+                        username = username[:-1] if len(username) != 0 else username
+                    else:
+                        password = password[:-1] if len(password) != 0 else password
+                    print(username)
                 elif event.key == pygame.K_RETURN:
                     if len(username) <= 5:
                         error_message = "Username must be at least 6 characters!"
@@ -44,7 +48,7 @@ def init_player():
                 elif event.unicode.isprintable():
                     if selected == "UN":
                         username += event.unicode
-                    elif selected == "PW":
+                    else:
                         password += event.unicode
 
                 error_surf = events.LOGIN_FONT.render(error_message, True, config.error_text_color)

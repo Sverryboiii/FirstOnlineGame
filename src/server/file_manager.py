@@ -16,7 +16,7 @@ def create_user(name, password, UID):
                 password TEXT
             )
         """)
-        db.execute("INSERT INTO users (uid, name, password) VALUES (?, ?, ?)", (str(UID, name, password)))
+        db.execute("INSERT INTO users (uid, name, password) VALUES (?, ?, ?)", (str(UID), name, password))
 
 def connect_user(name, password):
     data.SESSION_ID += 1
@@ -40,7 +40,7 @@ def connect_user(name, password):
 def register_user(un, pw):
     data.UID += 1
     data.SESSION_ID += 1
-    create_user(data.UID, un, pw)
+    create_user(un, pw, data.UID)
     return {
         "STATUS": 1,
         "player": player.Player(un, 50, 50),

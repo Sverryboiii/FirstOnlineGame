@@ -33,12 +33,15 @@ def try_connect(ip=IP, port=PORT):
         print("Couldn't connect to server!")
 
 def send(payload: dict, ip=IP, port=PORT):
+
+    data = json.dumps(payload).encode()
+
     for _ in range(config.FPS *alive_timeout_s):
         if debug:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as SOCKET:
                 with context.wrap_socket(SOCKET, server_hostname=IP) as client:
                     client.connect((ip, port))
-                    client.sendall(pickle.dumps(payload))
+                    client.sendall(data)
                     data = client.recv(1024)
         else:
             try:
@@ -58,5 +61,5 @@ def send(payload: dict, ip=IP, port=PORT):
         print("Disconnected from server!")
         return None
     if data:
-        return pickle.loads(data)
+        return json.loads(data.decode())
     return None
