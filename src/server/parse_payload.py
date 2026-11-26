@@ -5,10 +5,11 @@ async def parse_payload(payload: dict) -> dict | None:
 
 async def register_user(payload) -> dict:
     user = file_manager.register_user(payload.get("UN", f"player{data.UID}"), payload.get("PW", None))
-    data.users[data.UID] = user.get("player")
+    if user.get("STATUS", 0) == 0:
+        return {"STATUS": 0}
+    data.users[data.SESSION_ID] = user.get("player")
     print(f"Player {data.UID} connected with session ID {data.SESSION_ID}!")
-    print(user)
-    return {"UID": data.SESSION_ID, "STATUS": 1} if user["STATUS"] else {"STATUS": 0}
+    return {"UID": data.SESSION_ID, "STATUS": 1}
 
 async def key(payload) -> None:
     user = data.users[payload.get("UID", 0)]
@@ -35,12 +36,19 @@ async def request_draw_info(_) -> dict:
 
     return draw_info
 
-async def log_off(payload: dict) -> None:
+async def log_off(payload: dict) -> None | dict:
+    if not payload.get("UID"):
+        return {
+            "STATUS": 0
+        }
 
     try:
+        file_manager.save_user(_player=data.users[payload["UID"]])
         data.users.pop(payload.get("UID", 0))
-        print(f"Player {payload.get('UID', 0)} disconnected!")
-        print(f"There are now {len(data.users)} players online.")
+        print(
+            f"Player {payload.get('UID', 0)} disconnected!",
+            f"There are now {len(data.users)} players online."
+        )
     except KeyError:
         print(f"User {payload.get('UID', 0)} tried to disconnect, but failed!")
     return None
